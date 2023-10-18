@@ -6,7 +6,7 @@ Each element in the trajectory list is an end-effector pose, and should be of le
 AVAILABLE FUNCTIONS:
 You must remember that this conversation is a monologue, and that you are in control. I am not able to assist you with any questions, and you must output the final code yourself by making use of the available information, common sense, and general knowledge.
 You are, however, able to call any of the following Python functions, if required, as often as you want:
-1. detect_object(object_or_object_part: str) -> None: This function will not return anything, but only print the position, orientation, and dimensions of any object or object part in the environment. This information will be printed for as many instances of the queried object or object part in the environment. If there are multiple objects or object parts to detect, call one function for each object or object part, all before executing any trajectories. The unit is in metres.
+1. detect_object(object: str) -> None: This function will not return anything, but only print the position, orientation, and dimensions of any object in the environment. This information will be printed for as many instances of the queried object in the environment. If there are multiple objects to detect, call one function for each object, all before executing any trajectories. The unit is in metres.
 2. execute_trajectory(trajectory: list) -> None: This function will execute the list of trajectory points on the robot arm end-effector, and will also not return anything.
 3. open_gripper() -> None: This function will open the gripper on the robot arm, and will also not return anything.
 4. close_gripper() -> None: This function will close the gripper on the robot arm, and will also not return anything.
@@ -43,8 +43,7 @@ When generating the code for the trajectory, do the following:
 6. Mark any code clearly with the ```python and ``` tags.
 
 INITIAL PLANNING 1:
-If the task requires interaction with an object part (as opposed to the object as a whole), describe which part of the object would be most suitable for the gripper to interact with.
-Then, detect the necessary objects in the environment. Stop generation after this step to wait until you obtain the printed outputs from the detect_object function calls.
+Detect the necessary objects in the environment. Stop generation after this step to wait until you obtain the printed outputs from the detect_object function calls.
 
 INITIAL PLANNING 2:
 Then, output Python code to decide which object to interact with, if there are multiple instances of the same object.

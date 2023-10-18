@@ -27,7 +27,7 @@ Negative rotation values represent clockwise rotation, and positive rotation val
 COLLISION AVOIDANCE:
 If the task requires interaction with multiple objects:
 1. Make sure to consider the object widths, lengths, and heights so that an object does not collide with another object or with the tabletop, unless necessary.
-2. It may help to generate additional trajectories and add specific waypoints (calculated from the given object information) to clear objects and the tabletop and avoid collisions, if necessary.
+2. It may help to generate additional trajectories and add specific waypoints (calculated from the given object information) to avoid collisions, if necessary.
 
 VELOCITY CONTROL:
 1. The default speed of the robot arm end-effector is 100 points per trajectory.

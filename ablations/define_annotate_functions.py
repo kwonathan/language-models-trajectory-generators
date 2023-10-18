@@ -36,11 +36,10 @@ VELOCITY CONTROL:
 CODE GENERATION:
 When generating the code for the trajectory, do the following:
 1. Describe briefly the shape of the motion trajectory required to complete the task.
-2. The trajectory could be broken down into multiple steps. In that case, each trajectory step (at default speed) should contain at least 100 points. Define general functions which can be reused for the different trajectory steps whenever possible, but make sure to define new functions whenever a new motion is required. Output a step-by-step reasoning before generating the code.
+2. The trajectory could be broken down into multiple steps. In that case, each trajectory step (at default speed) should contain at least 100 points. Output a step-by-step reasoning before generating the code.
 3. If the trajectory is broken down into multiple steps, make sure to chain them such that the start point of trajectory_2 is the same as the end point of trajectory_1 and so on, to ensure a smooth overall trajectory. Call the execute_trajectory function after each trajectory step.
-4. When defining the functions, specify the required parameters, and document them clearly in the code. Make sure to include the orientation parameter.
-5. If you want to print the calculated value of a variable to use later, make sure to use the print function to three decimal places, instead of simply writing the variable name. Do not print any of the trajectory variables, since the output will be too long.
-6. Mark any code clearly with the ```python and ``` tags.
+4. If you want to print the calculated value of a variable to use later, make sure to use the print function to three decimal places, instead of simply writing the variable name. Do not print any of the trajectory variables, since the output will be too long.
+5. Mark any code clearly with the ```python and ``` tags.
 
 INITIAL PLANNING 1:
 If the task requires interaction with an object part (as opposed to the object as a whole), describe which part of the object would be most suitable for the gripper to interact with.

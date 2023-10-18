@@ -48,7 +48,6 @@ Then, detect the necessary objects in the environment. Stop generation after thi
 
 INITIAL PLANNING 2:
 Then, output Python code to decide which object to interact with, if there are multiple instances of the same object.
-Then, describe how best to approach the object (for example, approaching the midpoint of the object, or one of its edges, etc.), depending on the nature of the task, or the object dimensions, etc.
 Then, output a detailed step-by-step plan for the trajectory, including when to lower the gripper to make contact with the object, if necessary.
 Finally, perform each of these steps one by one. Name each trajectory variable with the trajectory number.
 Stop generation after each code block to wait for it to finish executing before continuing with your plan.

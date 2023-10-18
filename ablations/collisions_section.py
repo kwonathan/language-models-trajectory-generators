@@ -24,11 +24,6 @@ The end-effector gripper has two fingers, and they are currently parallel to the
 The gripper can only grasp objects along sides which are shorter than 0.08.
 Negative rotation values represent clockwise rotation, and positive rotation values represent anticlockwise rotation. The rotation values should be in radians.
 
-COLLISION AVOIDANCE:
-If the task requires interaction with multiple objects:
-1. Make sure to consider the object widths, lengths, and heights so that an object does not collide with another object or with the tabletop, unless necessary.
-2. It may help to generate additional trajectories and add specific waypoints (calculated from the given object information) to clear objects and the tabletop and avoid collisions, if necessary.
-
 VELOCITY CONTROL:
 1. The default speed of the robot arm end-effector is 100 points per trajectory.
 2. If you need to make the end-effector follow a particular trajectory more quickly, then generate fewer points for the trajectory, and vice versa.

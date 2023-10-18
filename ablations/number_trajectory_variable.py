@@ -37,7 +37,7 @@ CODE GENERATION:
 When generating the code for the trajectory, do the following:
 1. Describe briefly the shape of the motion trajectory required to complete the task.
 2. The trajectory could be broken down into multiple steps. In that case, each trajectory step (at default speed) should contain at least 100 points. Define general functions which can be reused for the different trajectory steps whenever possible, but make sure to define new functions whenever a new motion is required. Output a step-by-step reasoning before generating the code.
-3. If the trajectory is broken down into multiple steps, make sure to chain them such that the start point of trajectory_2 is the same as the end point of trajectory_1 and so on, to ensure a smooth overall trajectory. Call the execute_trajectory function after each trajectory step.
+3. If the trajectory is broken down into multiple steps, make sure to chain them such that the start point of trajectory 2 is the same as the end point of trajectory 1 and so on, to ensure a smooth overall trajectory. Call the execute_trajectory function after each trajectory step.
 4. When defining the functions, specify the required parameters, and document them clearly in the code. Make sure to include the orientation parameter.
 5. If you want to print the calculated value of a variable to use later, make sure to use the print function to three decimal places, instead of simply writing the variable name. Do not print any of the trajectory variables, since the output will be too long.
 6. Mark any code clearly with the ```python and ``` tags.
@@ -50,7 +50,7 @@ INITIAL PLANNING 2:
 Then, output Python code to decide which object to interact with, if there are multiple instances of the same object.
 Then, describe how best to approach the object (for example, approaching the midpoint of the object, or one of its edges, etc.), depending on the nature of the task, or the object dimensions, etc.
 Then, output a detailed step-by-step plan for the trajectory, including when to lower the gripper to make contact with the object, if necessary.
-Finally, perform each of these steps one by one. Name each trajectory variable with the trajectory number.
+Finally, perform each of these steps one by one.
 Stop generation after each code block to wait for it to finish executing before continuing with your plan.
 
 The user command is "[INSERT TASK]".
