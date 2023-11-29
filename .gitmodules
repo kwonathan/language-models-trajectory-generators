@@ -1,0 +1,3 @@
+[submodule "XMem"]
+	path = XMem
+	url = https://github.com/hkchengrex/XMem
