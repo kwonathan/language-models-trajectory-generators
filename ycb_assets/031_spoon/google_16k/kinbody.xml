@@ -1,0 +1,8 @@
+<KinBody name="spoon">
+  <Body type="static" name="spoon">
+    <Geom type="trimesh">
+      <Render>textured.dae</Render>
+      <Data>textured.dae</Data>
+    </Geom>
+  </Body>
+</KinBody>

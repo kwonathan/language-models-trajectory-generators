@@ -1,0 +1,8 @@
+<KinBody name="gelatin_box">
+  <Body type="static" name="gelatin_box">
+    <Geom type="trimesh">
+      <Render>textured.dae</Render>
+      <Data>textured.dae</Data>
+    </Geom>
+  </Body>
+</KinBody>

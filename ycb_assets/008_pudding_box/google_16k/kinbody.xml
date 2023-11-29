@@ -1,0 +1,8 @@
+<KinBody name="pudding_box">
+  <Body type="static" name="pudding_box">
+    <Geom type="trimesh">
+      <Render>textured.dae</Render>
+      <Data>textured.dae</Data>
+    </Geom>
+  </Body>
+</KinBody>

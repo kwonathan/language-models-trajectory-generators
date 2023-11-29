@@ -1,0 +1,8 @@
+<KinBody name="dice">
+  <Body type="static" name="dice">
+    <Geom type="trimesh">
+      <Render>textured.dae</Render>
+      <Data>textured.dae</Data>
+    </Geom>
+  </Body>
+</KinBody>

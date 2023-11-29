@@ -1,0 +1,8 @@
+<KinBody name="large_clamp">
+  <Body type="static" name="large_clamp">
+    <Geom type="trimesh">
+      <Render>textured.dae</Render>
+      <Data>textured.dae</Data>
+    </Geom>
+  </Body>
+</KinBody>

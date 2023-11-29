@@ -1,0 +1,8 @@
+<KinBody name="colored_wood_blocks">
+  <Body type="static" name="colored_wood_blocks">
+    <Geom type="trimesh">
+      <Render>textured.dae</Render>
+      <Data>textured.dae</Data>
+    </Geom>
+  </Body>
+</KinBody>

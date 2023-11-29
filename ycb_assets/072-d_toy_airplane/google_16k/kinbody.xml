@@ -1,0 +1,8 @@
+<KinBody name="toy_airplane">
+  <Body type="static" name="toy_airplane">
+    <Geom type="trimesh">
+      <Render>textured.dae</Render>
+      <Data>textured.dae</Data>
+    </Geom>
+  </Body>
+</KinBody>

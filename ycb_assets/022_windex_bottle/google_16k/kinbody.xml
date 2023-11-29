@@ -1,0 +1,8 @@
+<KinBody name="windex_bottle">
+  <Body type="static" name="windex_bottle">
+    <Geom type="trimesh">
+      <Render>textured.dae</Render>
+      <Data>textured.dae</Data>
+    </Geom>
+  </Body>
+</KinBody>

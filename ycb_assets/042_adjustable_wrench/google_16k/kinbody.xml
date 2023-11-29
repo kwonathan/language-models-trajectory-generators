@@ -1,0 +1,8 @@
+<KinBody name="adjustable_wrench">
+  <Body type="static" name="adjustable_wrench">
+    <Geom type="trimesh">
+      <Render>textured.dae</Render>
+      <Data>textured.dae</Data>
+    </Geom>
+  </Body>
+</KinBody>

@@ -1,0 +1,8 @@
+<KinBody name="pitcher_base">
+  <Body type="static" name="pitcher_base">
+    <Geom type="trimesh">
+      <Render>textured.dae</Render>
+      <Data>textured.dae</Data>
+    </Geom>
+  </Body>
+</KinBody>

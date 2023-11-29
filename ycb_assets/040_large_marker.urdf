@@ -1,0 +1,22 @@
+<robot name="040_large_marker">
+	<link name="_name">
+		<visual>
+			<origin xyz="0.35725124851893997 0.07880770743269519 -0.09018296996191044" rpy="0 0 0" />
+			<geometry>
+				<mesh filename="040_large_marker/google_16k/textured.obj" scale="10 10 10" />
+			</geometry>
+			<material name="texture">
+				<color rgba="1.0 1.0 1.0 1.0" />
+			</material>
+		</visual>
+		<collision>
+			<geometry>
+				<mesh filename="040_large_marker/google_16k/textured_vhacd.obj" scale="10 10 10" />
+			</geometry>
+		<origin xyz="0.35725124851893997 0.07880770743269519 -0.09018296996191044" rpy="0 0 0" /></collision>
+		<inertial>
+			<mass value="1.0" />
+			<inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0" />
+		</inertial>
+	</link>
+</robot>

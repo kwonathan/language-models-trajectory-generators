@@ -1,0 +1,8 @@
+<KinBody name="rubiks_cube">
+  <Body type="static" name="rubiks_cube">
+    <Geom type="trimesh">
+      <Render>textured.dae</Render>
+      <Data>textured.dae</Data>
+    </Geom>
+  </Body>
+</KinBody>

@@ -1,0 +1,8 @@
+<KinBody name="nine_hole_peg_test">
+  <Body type="static" name="nine_hole_peg_test">
+    <Geom type="trimesh">
+      <Render>textured.dae</Render>
+      <Data>textured.dae</Data>
+    </Geom>
+  </Body>
+</KinBody>

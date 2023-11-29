@@ -1,0 +1,8 @@
+<KinBody name="foam_brick">
+  <Body type="static" name="foam_brick">
+    <Geom type="trimesh">
+      <Render>textured.dae</Render>
+      <Data>textured.dae</Data>
+    </Geom>
+  </Body>
+</KinBody>
