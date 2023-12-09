@@ -1,0 +1,8 @@
+<KinBody name="tomato_soup_can">
+  <Body type="static" name="tomato_soup_can">
+    <Geom type="trimesh">
+      <Render>textured.dae</Render>
+      <Data>textured.dae</Data>
+    </Geom>
+  </Body>
+</KinBody>
