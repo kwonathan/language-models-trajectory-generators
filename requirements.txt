@@ -9,7 +9,7 @@ opencv_python==4.8.1.78
 Pillow==10.1.0
 progressbar33==2.4
 pybullet==3.2.6
-PySide6==6.6.1
+PySide6==6.5.2
 scipy==1.11.4
 shapely==2.0.2
 thinplate==1.0.0
