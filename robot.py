@@ -1,10 +1,8 @@
 import pybullet as p
 import numpy as np
-import torch
 import math
 import config
 from PIL import Image
-from torchvision.utils import save_image
 from config import fov, aspect, near_plane, far_plane
 
 class Robot:
@@ -162,6 +160,8 @@ class Robot:
             f = config.far_plane
             depth_array = 2 * n * f / (f + n - (2 * depth_buffer - 1.0) * (f - n))
 
-            save_image(torch.Tensor(depth_array), depth_image_path)
+            depth_array = np.clip(depth_array, 0, 1)
+            depth_image = Image.fromarray(depth_array * 255)
+            depth_image.convert("L").save(depth_image_path)
 
         return camera_position, camera_orientation_q
