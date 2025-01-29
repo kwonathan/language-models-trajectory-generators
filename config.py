@@ -10,11 +10,11 @@ rel_tol = 1e-4
 abs_tol = 0.0
 
 # Robots
-gripper_goal_position_open_sawyer = None
-gripper_goal_position_closed_sawyer = None
-arm_movement_force_sawyer = None
-gripper_movement_force_sawyer = None
-ee_index_sawyer = None
+gripper_goal_position_open_sawyer = 0.2
+gripper_goal_position_closed_sawyer = 1.0
+arm_movement_force_sawyer = 5 * 240
+gripper_movement_force_sawyer = 1000
+ee_index_sawyer = 16
 
 gripper_goal_position_open_franka = 0.04
 gripper_goal_position_closed_franka = 0.0005
@@ -23,9 +23,9 @@ gripper_movement_force_franka = 1000
 ee_index_franka = 11
 
 # Environment
-base_start_position_sawyer = None
-base_start_orientation_e_sawyer = None
-joint_start_positions_sawyer = None
+base_start_position_sawyer = [0.0, 0.0, 0.0]
+base_start_orientation_e_sawyer = [0.0, 0.0, math.pi / 2]
+joint_start_positions_sawyer = [0.0, 0.0, 0.0, 0.0927, 0.0135, 0.0, 0.0, 0.0, 0.0287, 0.0482, 0.2215, 0.1062, 0.0, 0.2360, 0.0, 0.0, 0.0572]
 base_start_position_franka = [0.0, 0.0, 0.0]
 base_start_orientation_e_franka = [0.0, 0.0, math.pi / 2]
 joint_start_positions_franka = [0.0, 0.0, 0.0, -1.5708, 0.0, 1.8675, 0.0, 0.04, 0.04]
@@ -51,7 +51,13 @@ camera_yaw = 225.0
 camera_pitch = -30.0
 camera_target_position = [0.0, 0.6, 0.3]
 
-depth_offset = 0.03
+wrist_camera_offset_sawyer = 0.125
+
+# Object grasping
+point_cloud_top_surface_filter = 0.06
+bounding_cube_depth_offset = 0.06
+gripper_depth_offset_franka = 0.06
+gripper_depth_offset_sawyer = -0.12
 
 # Segmentation
 segmentation_threshold = 0.2
@@ -91,7 +97,6 @@ depth_image_head_path = "./images/depth_image_head.png"
 rgb_image_trajectory_path = "./images/trajectory/rgb_image_{step}.png"
 depth_image_trajectory_path = "./images/trajectory/depth_image_{step}.png"
 bounding_cube_mask_image_path = "./images/bounding_cube_mask_{object}_{mask}.png"
-bounding_cube_image_path = "./images/bounding_cube_image_{object}.png"
 
 langsam_image_path = "./images/langsam_image_{object}.png"
 xmem_input_path = "./images/xmem_input.png"
