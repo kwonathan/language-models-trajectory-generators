@@ -22,10 +22,12 @@ arm_movement_force_franka = 5 * 240
 gripper_movement_force_franka = 1000
 ee_index_franka = 11
 
+robotiq_motor_joint = 1
+
 # Environment
 base_start_position_sawyer = [0.0, 0.0, 0.0]
 base_start_orientation_e_sawyer = [0.0, 0.0, math.pi / 2]
-joint_start_positions_sawyer = [0.0, 0.0, 0.0, 0.0927, 0.0135, 0.0, 0.0, 0.0, 0.0287, 0.0482, 0.2215, 0.1062, 0.0, 0.2360, 0.0, 0.0, 0.0572]
+joint_start_positions_sawyer = [-0.0304, -2.0563, -1.1631, -0.3829, 1.3152, 0.1496, 1.4462, -0.2288]
 base_start_position_franka = [0.0, 0.0, 0.0]
 base_start_orientation_e_franka = [0.0, 0.0, math.pi / 2]
 joint_start_positions_franka = [0.0, 0.0, 0.0, -1.5708, 0.0, 1.8675, 0.0, 0.04, 0.04]
