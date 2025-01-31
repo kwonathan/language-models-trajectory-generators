@@ -75,7 +75,7 @@ class API:
 
         for i, bounding_cube_world_coordinates in enumerate(bounding_cubes_world_coordinates):
 
-            bounding_cube_world_coordinates[4][2] -= config.depth_offset
+            bounding_cube_world_coordinates[4][2] -= config.bounding_cube_depth_offset
 
             object_width = np.around(np.linalg.norm(bounding_cube_world_coordinates[1] - bounding_cube_world_coordinates[0]), 3)
             object_length = np.around(np.linalg.norm(bounding_cube_world_coordinates[2] - bounding_cube_world_coordinates[1]), 3)

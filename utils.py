@@ -93,7 +93,7 @@ def get_bounding_cube_from_point_cloud(image, masks, depth_array, camera_positio
             contour_world_points = [get_world_point_world_frame(camera_position, camera_orientation_q, "head", image, pixel_point) for pixel_point in contour_pixel_points]
             max_z_coordinate = np.max(np.array(contour_world_points)[:, 2])
             min_z_coordinate = np.min(np.array(contour_world_points)[:, 2])
-            top_surface_world_points = [world_point for world_point in contour_world_points if world_point[2] > max_z_coordinate - config.depth_offset]
+            top_surface_world_points = [world_point for world_point in contour_world_points if world_point[2] > max_z_coordinate - config.point_cloud_top_surface_filter]
 
             rect = MultiPoint([world_point[:2] for world_point in top_surface_world_points]).minimum_rotated_rectangle
             if isinstance(rect, Polygon):
