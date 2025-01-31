@@ -16,6 +16,9 @@ class Robot:
             self.id = p.loadURDF("sawyer_robot/sawyer_description/urdf/sawyer.urdf", self.base_start_position, self.base_start_orientation_q, useFixedBase=True)
             self.robot = "sawyer"
             self.ee_index = config.ee_index_sawyer
+            self.gripper_id = p.loadURDF("robotiq_2f_85/robotiq_2f_85.urdf", config.ee_start_position, p.getQuaternionFromEuler(config.ee_start_orientation_e))
+            self.gripper_motor = config.robotiq_motor_joint
+            p.createConstraint(self.id, self.ee_index, self.gripper_id, 0, jointType=p.JOINT_FIXED, jointAxis=[0, 0, 0], parentFramePosition=[0, 0, 0], childFramePosition=[0, 0, -0.07], childFrameOrientation=p.getQuaternionFromEuler([0, 0, 0]))
         elif args.robot == "franka":
             self.base_start_position = config.base_start_position_franka
             self.base_start_orientation_q = p.getQuaternionFromEuler(config.base_start_orientation_e_franka)
@@ -32,24 +35,32 @@ class Robot:
         self.trajectory_step = 1
 
         i = 0
+        self.joint_indices = []
         for j in range(p.getNumJoints(self.id)):
             joint_type = p.getJointInfo(self.id, j)[2]
             if joint_type == p.JOINT_PRISMATIC or joint_type == p.JOINT_REVOLUTE:
                 p.resetJointState(self.id, j, self.joint_start_positions[i])
                 i += 1
+                self.joint_indices.append(j)
 
 
 
     def move(self, env, ee_target_position, ee_target_orientation_e, gripper_open, is_trajectory):
 
         if self.robot == "sawyer":
-            gripper1_index = None
-            gripper2_index = None
+            gripper1_index = self.gripper_motor
+            gripper2_index = self.gripper_motor
             gripper_target_position = config.gripper_goal_position_open_sawyer if gripper_open else config.gripper_goal_position_closed_sawyer
+            if is_trajectory:
+                ee_target_position = list(ee_target_position)
+                ee_target_position[2] -= config.gripper_depth_offset_sawyer
         elif self.robot == "franka":
             gripper1_index = 9
             gripper2_index = 10
             gripper_target_position = config.gripper_goal_position_open_franka if gripper_open else config.gripper_goal_position_closed_franka
+            if is_trajectory:
+                ee_target_position = list(ee_target_position)
+                ee_target_position[2] -= config.gripper_depth_offset_franka
 
         min_joint_positions = [p.getJointInfo(self.id, i)[8] for i in range(p.getNumJoints(self.id)) if p.getJointInfo(self.id, i)[2] == p.JOINT_PRISMATIC or p.getJointInfo(self.id, i)[2] == p.JOINT_REVOLUTE]
         max_joint_positions = [p.getJointInfo(self.id, i)[9] for i in range(p.getNumJoints(self.id)) if p.getJointInfo(self.id, i)[2] == p.JOINT_PRISMATIC or p.getJointInfo(self.id, i)[2] == p.JOINT_REVOLUTE]
@@ -61,8 +72,12 @@ class Robot:
         ee_current_position = p.getLinkState(self.id, self.ee_index, computeForwardKinematics=True)[0]
         ee_current_orientation_q = p.getLinkState(self.id, self.ee_index, computeForwardKinematics=True)[1]
         ee_current_orientation_e = p.getEulerFromQuaternion(ee_current_orientation_q)
-        gripper1_current_position = p.getJointState(self.id, gripper1_index)[0]
-        gripper2_current_position = p.getJointState(self.id, gripper2_index)[0]
+        if self.robot == "sawyer":
+            gripper1_current_position = p.getJointState(self.gripper_id, gripper1_index)[0]
+            gripper2_current_position = p.getJointState(self.gripper_id, gripper2_index)[0]
+        elif self.robot == "franka":
+            gripper1_current_position = p.getJointState(self.id, gripper1_index)[0]
+            gripper2_current_position = p.getJointState(self.id, gripper2_index)[0]
 
         time_step = 0
 
@@ -78,9 +93,14 @@ class Robot:
             target_joint_positions = p.calculateInverseKinematics(self.id, self.ee_index, ee_target_position, targetOrientation=ee_target_orientation_q, lowerLimits=min_joint_positions, upperLimits=max_joint_positions, jointRanges=joint_ranges, restPoses=rest_poses, maxNumIterations=500)
 
             if self.robot == "sawyer":
-                pass
+                p.setJointMotorControlArray(self.id, self.joint_indices, p.POSITION_CONTROL, targetPositions=target_joint_positions, forces=[config.arm_movement_force_sawyer] * 8)
+                current_joints = [p.getJointState(self.gripper_id, i)[0] for i in range(p.getNumJoints(self.gripper_id))]
+                joint_idx = [6, 3, 8, 5, 10]
+                target_joints = [current_joints[1], -current_joints[1], -current_joints[1], current_joints[1], current_joints[1]]
+                p.setJointMotorControlArray(self.gripper_id, joint_idx, p.POSITION_CONTROL, target_joints, positionGains=np.ones(5))
+                p.setJointMotorControl2(self.gripper_id, self.gripper_motor, p.POSITION_CONTROL, targetPosition=gripper_target_position, force=config.gripper_movement_force_sawyer)
             elif self.robot == "franka":
-                p.setJointMotorControlArray(self.id, range(7), p.POSITION_CONTROL, targetPositions=target_joint_positions[:-2], forces=[config.arm_movement_force_franka] * 7)
+                p.setJointMotorControlArray(self.id, self.joint_indices[:-2], p.POSITION_CONTROL, targetPositions=target_joint_positions[:-2], forces=[config.arm_movement_force_franka] * 7)
                 p.setJointMotorControl2(self.id, gripper1_index, p.POSITION_CONTROL, targetPosition=gripper_target_position, force=config.gripper_movement_force_franka)
                 p.setJointMotorControl2(self.id, gripper2_index, p.POSITION_CONTROL, targetPosition=gripper_target_position, force=config.gripper_movement_force_franka)
 
@@ -92,8 +112,12 @@ class Robot:
             ee_current_position = p.getLinkState(self.id, self.ee_index, computeForwardKinematics=True)[0]
             ee_current_orientation_q = p.getLinkState(self.id, self.ee_index, computeForwardKinematics=True)[1]
             ee_current_orientation_e = p.getEulerFromQuaternion(ee_current_orientation_q)
-            gripper1_new_position = p.getJointState(self.id, gripper1_index)[0]
-            gripper2_new_position = p.getJointState(self.id, gripper2_index)[0]
+            if self.robot == "sawyer":
+                gripper1_new_position = p.getJointState(self.gripper_id, gripper1_index)[0]
+                gripper2_new_position = p.getJointState(self.gripper_id, gripper2_index)[0]
+            elif self.robot == "franka":
+                gripper1_new_position = p.getJointState(self.id, gripper1_index)[0]
+                gripper2_new_position = p.getJointState(self.id, gripper2_index)[0]
 
             self.ee_current_position = ee_current_position
             self.ee_current_orientation_e = ee_current_orientation_e
@@ -127,7 +151,9 @@ class Robot:
     def get_camera_image(self, camera, env, save_camera_image, rgb_image_path, depth_image_path):
 
         if camera == "wrist":
-            camera_position = p.getLinkState(self.id, self.ee_index, computeForwardKinematics=True)[0]
+            camera_position = list(p.getLinkState(self.id, self.ee_index, computeForwardKinematics=True)[0])
+            if self.robot == "sawyer":
+                camera_position[2] -= config.wrist_camera_offset_sawyer
             camera_orientation_q = p.getLinkState(self.id, self.ee_index, computeForwardKinematics=True)[1]
         elif camera == "head":
             camera_position = config.head_camera_position
