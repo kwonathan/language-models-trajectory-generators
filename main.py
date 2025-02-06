@@ -11,6 +11,7 @@ import logging
 import functools
 import models
 import config
+from numpy import pi
 from lang_sam import LangSAM
 from multiprocessing import Process, Pipe
 from io import StringIO
@@ -32,10 +33,11 @@ from XMem.model.network import XMem
 if __name__ == "__main__":
 
     openai.api_key = os.getenv("OPENAI_API_KEY")
+    client = openai.OpenAI()
 
     # Parse args
     parser = argparse.ArgumentParser(description="Main Program.")
-    parser.add_argument("-lm", "--language_model", choices=["gpt-4", "gpt-4-32k", "gpt-3.5-turbo", "gpt-3.5-turbo-16k"], default="gpt-4", help="select language model")
+    parser.add_argument("-lm", "--language_model", choices=["gpt-4o", "gpt-4o-mini", "gpt-4-turbo", "gpt-4", "gpt-3.5-turbo"], default="gpt-4o", help="select language model")
     parser.add_argument("-r", "--robot", choices=["sawyer", "franka"], default="sawyer", help="select robot")
     parser.add_argument("-m", "--mode", choices=["default", "debug"], default="default", help="select mode to run")
     args = parser.parse_args()
@@ -79,7 +81,7 @@ if __name__ == "__main__":
     command = input("Enter a command: ")
     api.command = command
 
-    # ChatGPT
+    # Main task execution loop
     logger.info(PROGRESS + "STARTING TASK..." + ENDC)
 
     messages = []
@@ -89,7 +91,7 @@ if __name__ == "__main__":
     new_prompt = MAIN_PROMPT.replace("[INSERT EE POSITION]", str(config.ee_start_position)).replace("[INSERT TASK]", command)
 
     logger.info(PROGRESS + "Generating ChatGPT output..." + ENDC)
-    messages = models.get_chatgpt_output(args.language_model, new_prompt, messages, "system")
+    messages = models.get_chatgpt_output(client, args.language_model, new_prompt, messages, "system")
     logger.info(OK + "Finished generating ChatGPT output!" + ENDC)
 
     while True:
@@ -105,25 +107,26 @@ if __name__ == "__main__":
                 block_number = 0
 
                 for block in code_block:
-                    if len(block.split("```")) > 1:
-                        code = block.split("```")[0]
-                        block_number += 1
-                        try:
-                            f = StringIO()
-                            with redirect_stdout(f):
-                                exec(code)
-                        except Exception:
-                            error_message = traceback.format_exc()
-                            new_prompt += ERROR_CORRECTION_PROMPT.replace("[INSERT BLOCK NUMBER]", str(block_number)).replace("[INSERT ERROR MESSAGE]", error_message)
-                            new_prompt += "\n"
-                            error = True
-                        else:
-                            s = f.getvalue()
-                            error = False
-                            if s != "" and len(s) < 2000:
-                                new_prompt += PRINT_OUTPUT_PROMPT.replace("[INSERT PRINT STATEMENT OUTPUT]", s)
+                    if not error:
+                        if len(block.split("```")) > 1:
+                            code = block.split("```")[0]
+                            block_number += 1
+                            try:
+                                f = StringIO()
+                                with redirect_stdout(f):
+                                    exec(code)
+                            except Exception:
+                                error_message = traceback.format_exc()
+                                new_prompt += ERROR_CORRECTION_PROMPT.replace("[INSERT BLOCK NUMBER]", str(block_number)).replace("[INSERT ERROR MESSAGE]", error_message)
                                 new_prompt += "\n"
                                 error = True
+                            else:
+                                s = f.getvalue()
+                                error = False
+                                if s != "" and len(s) < 2000:
+                                    new_prompt += PRINT_OUTPUT_PROMPT.replace("[INSERT PRINT STATEMENT OUTPUT]", s)
+                                    new_prompt += "\n"
+                                    error = True
 
             if error:
 
@@ -140,7 +143,7 @@ if __name__ == "__main__":
                     new_prompt += "\n"
 
                     logger.info(PROGRESS + "Generating ChatGPT output..." + ENDC)
-                    messages = models.get_chatgpt_output(args.language_model, new_prompt, messages, "user")
+                    messages = models.get_chatgpt_output(client, args.language_model, new_prompt, messages, "user")
                     logger.info(OK + "Finished generating ChatGPT output!" + ENDC)
 
                     logger.info(PROGRESS + "RETRYING TASK..." + ENDC)
@@ -154,7 +157,7 @@ if __name__ == "__main__":
                     error = False
 
                     logger.info(PROGRESS + "Generating ChatGPT output..." + ENDC)
-                    messages = models.get_chatgpt_output(args.language_model, new_prompt, messages, "system")
+                    messages = models.get_chatgpt_output(client, args.language_model, new_prompt, messages, "system")
                     logger.info(OK + "Finished generating ChatGPT output!" + ENDC)
 
                     api.failed_task = False
@@ -162,15 +165,17 @@ if __name__ == "__main__":
                 else:
 
                     logger.info(PROGRESS + "Generating ChatGPT output..." + ENDC)
-                    messages = models.get_chatgpt_output(args.language_model, new_prompt, messages, "user")
+                    messages = models.get_chatgpt_output(client, args.language_model, new_prompt, messages, "user")
                     logger.info(OK + "Finished generating ChatGPT output!" + ENDC)
+
+                    error = False
 
         logger.info(OK + "FINISHED TASK!" + ENDC)
 
         new_prompt = input("Enter a command: ")
 
         logger.info(PROGRESS + "Generating ChatGPT output..." + ENDC)
-        messages = models.get_chatgpt_output(args.language_model, new_prompt, messages, "user")
+        messages = models.get_chatgpt_output(client, args.language_model, new_prompt, messages, "user")
         logger.info(OK + "Finished generating ChatGPT output!" + ENDC)
 
         api.completed_task = False

@@ -3,7 +3,6 @@ import matplotlib.pyplot as plt
 import sys
 import torch
 import config
-from openai import OpenAI
 from PIL import Image
 from torchvision import transforms
 from torchvision.utils import draw_bounding_boxes, draw_segmentation_masks
@@ -44,13 +43,11 @@ def get_langsam_output(image, model, segmentation_texts, segmentation_count):
 
 
 
-def get_chatgpt_output(model, new_prompt, messages, role, file=sys.stdout):
+def get_chatgpt_output(client, model, new_prompt, messages, role, file=sys.stdout):
 
     print(role + ":", file=file)
     print(new_prompt, file=file)
     messages.append({"role":role, "content":new_prompt})
-
-    client = OpenAI()
 
     completion = client.chat.completions.create(
         model=model,
