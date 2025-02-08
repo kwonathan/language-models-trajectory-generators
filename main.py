@@ -62,7 +62,7 @@ if __name__ == "__main__":
 
     # API set-up
     main_connection, env_connection = Pipe()
-    api = API(args, main_connection, logger, langsam_model, xmem_model, device)
+    api = API(args, main_connection, logger, client, langsam_model, xmem_model, device)
 
     detect_object = api.detect_object
     execute_trajectory = api.execute_trajectory

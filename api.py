@@ -12,11 +12,12 @@ from config import CAPTURE_IMAGES, ADD_BOUNDING_CUBES, ADD_TRAJECTORY_POINTS, EX
 
 class API:
 
-    def __init__(self, args, main_connection, logger, langsam_model, xmem_model, device):
+    def __init__(self, args, main_connection, logger, client, langsam_model, xmem_model, device):
 
         self.args = args
         self.main_connection = main_connection
         self.logger = logger
+        self.client = client
         self.langsam_model = langsam_model
         self.xmem_model = xmem_model
         self.device = device
@@ -211,7 +212,7 @@ class API:
             messages = []
 
             self.logger.info(PROGRESS + "Generating ChatGPT output..." + ENDC)
-            messages = models.get_chatgpt_output(self.args.language_model, new_prompt, messages, "system", file=sys.stderr)
+            messages = models.get_chatgpt_output(self.client, self.args.language_model, new_prompt, messages, "system", file=sys.stderr)
             self.logger.info(OK + "Finished generating ChatGPT output!" + ENDC)
 
             code_block = messages[-1]["content"].split("```python")
