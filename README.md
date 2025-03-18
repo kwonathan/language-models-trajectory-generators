@@ -4,19 +4,21 @@
 
 [The Robot Learning Lab](https://www.robot-learning.uk/), Department of Computing, Imperial College London
 
-[📄 arXiv](https://arxiv.org/abs/2310.11604) · [💻 project page](https://www.robot-learning.uk/language-models-trajectory-generators)
+<a href="https://arxiv.org/abs/2310.11604"><img src="https://img.shields.io/badge/arXiv-%23B31B1B?logo=arxiv&logoColor=%23B31B1B&labelColor=gray"></a>
+<a href="https://www.robot-learning.uk/language-models-trajectory-generators"><img src="https://img.shields.io/badge/%F0%9F%92%BB-project%20page-blue"></a>
+<a href="https://www.youtube.com/watch?v=J6lg0UXieBs"><img src="https://img.shields.io/badge/video-%23FF0000?logo=youtube&logoColor=%23FF0000&labelColor=gray"></a>
 
+<p float="left">
+      <img src="./assets/push_can_right_sawyer.png" width="24%" title="push the can towards the right">
+      <img src="./assets/place_apple_in_bowl_sawyer.png" width="24%" title="place the apple in the bowl">
+      <img src="./assets/shake_mustard_bottle_sawyer.png" width="24%" title="shake the mustard bottle">
+      <img src="./assets/drop_ball_into_cup_sawyer.png" width="24%" title="drop the ball into the cup">
+</p>
 <p float="left">
       <img src="./assets/pick_rightmost_can.png" width="24%" title="pick the rightmost can">
       <img src="./assets/pick_middle_fruit.png" width="24%" title="pick the fruit in the middle">
       <img src="./assets/move_banana_near_pear.png" width="24%" title="move the banana near the pear">
       <img src="./assets/move_lonely_object.png" width="24%" title="move the lonely object to the others">
-</p>
-<p float="left">
-      <img src="./assets/push_can_right.png" width="24%" title="push the can towards the right">
-      <img src="./assets/place_apple_in_bowl.png" width="24%" title="place the apple in the bowl">
-      <img src="./assets/shake_mustard_bottle.png" width="24%" title="shake the mustard bottle">
-      <img src="./assets/drop_ball_into_cup.png" width="24%" title="drop the ball into the cup">
 </p>
 
 In this work, we investigate if an LLM (GPT-4) can directly predict a dense sequence of end-effector poses for manipulation skills, when given access to only object detection and segmentation vision models, and without any in-context examples, motion primitives, external trajectory optimisers, or robotics-specific training data, with only a single task-agnostic prompt.
@@ -37,6 +39,7 @@ This repository also contains the [full prompts](https://github.com/kwonathan/la
   - [Starting the Simulator](#starting-the-simulator)
   - [Adding Other Robots](#adding-other-robots)
   - [Adding Other Objects](#adding-other-objects)
+  - [Adding Other LLMs](#adding-other-llms)
 - [🖥 Code Structure](#-code-structure)
 - [📚 Citation](#-citation)
 
@@ -109,12 +112,12 @@ openai.api_key = os.getenv("OPENAI_API_KEY")
 
 The following command will start the PyBullet simulator to run the system:
 ```
-python main.py --robot franka
+python main.py
 ```
 
 The available arguments and their options are as follows:
-- `--language_model` or `-lm`: select the language model from `gpt-4`, `gpt-4-32k`, `gpt-3.5-turbo`, or `gpt-3.5-turbo-16k`; default is `gpt-4`. `gpt-4` performs better than `gpt-3.5-turbo`, and `gpt-4-32k` with the longer context length seems to be available only to a small group of beta testers.
-- `--robot` or `-r`: select the robot from `sawyer`, or `franka`; default is `sawyer`. Currently, this repository only contains the code to run the system on the `franka` robot. This will be updated with support for the `sawyer` robot in the future.
+- `--language_model` or `-lm`: select the language model from `gpt-4o`, `gpt-4o-mini`, `gpt-4-turbo`, `gpt-4` or `gpt-3.5-turbo`; default is `gpt-4o`. `gpt-4o` performs better than `gpt-4o-mini` but is slower and more expensive, and `gpt-4-turbo`, `gpt-4` and `gpt-3.5-turbo` are older versions of the GPT language model family. More model variants and details can be found [here](https://platform.openai.com/docs/models).
+- `--robot` or `-r`: select the robot from `sawyer`, or `franka`; default is `sawyer`, which was used for the real-world experiments.
 - `--mode` or `-m`: select the mode to run from `default`, or `debug`; default is `default`. The `debug` mode will start the PyBullet simulator with various debug windows which may be useful for visualisation.
 
 Once the system and the models have been loaded upon starting the simulator, you will see the following prompt:
@@ -130,9 +133,7 @@ After task execution, if the task was completed successfully, you will be able t
 
 ### Adding Other Robots
 
-Currently, this repository only contains the code to run the system on the Franka Panda robot. However, the system is robot-agnostic, and you should be able to run it with any other robot arm you load in the simulator.
-
-The Sawyer robot with the 2F-85 Robotiq gripper as used for the experiments in the paper will be added soon.
+This repository only contains the code to run the system on the Sawyer and Franka Panda robots. However, the system is robot-agnostic, and you should be able to run it with any other robot arm you load in the simulator.
 
 The Sawyer robot was cloned from [here](https://github.com/erwincoumans/pybullet_robots/tree/master/data/sawyer_robot).
 The Franka Panda robot was cloned from [here](https://github.com/bulletphysics/bullet3/tree/master/examples/pybullet/gym/pybullet_data/franka_panda).
@@ -167,6 +168,16 @@ object2_start_orientation_q = p.getQuaternionFromEuler(config.object2_start_orie
 object2_model = p.loadURDF("ycb_assets/003_cracker_box.urdf", object2_start_position, object2_start_orientation_q, useFixedBase=False, globalScaling=config.global_scaling)
 ```
 
+### Adding Other LLMs
+
+The system is also LLM-agnostic, and the paper investigates the performance of five of the most popular and currently available LLMs on the main prompt. The codebase requires minimal changes to add these other LLMs to the system: firstly, it may be helpful to add a function in `models.py` similar to `get_chatgpt_output` for the desired LLM; secondly, all calls to `get_chatgpt_output` in `api.py` and `main.py` should be changed accordingly.
+
+The API documentation for the Gemini models can be found [here](https://ai.google.dev/gemini-api/docs). The API reference can be found [here](https://ai.google.dev/api?lang=python). You can create API keys for the Gemini models [here](https://aistudio.google.com/apikey). You can also refer to information on OpenAI compatibility [here](https://ai.google.dev/gemini-api/docs/openai), and the model variants [here](https://ai.google.dev/gemini-api/docs/models).
+
+The API documentation and reference for the Claude models can be found [here](https://docs.anthropic.com/en/home). You can create API keys for the Claude models [here](https://console.anthropic.com/settings/keys). You can also refer to information on the model variants [here](https://docs.anthropic.com/en/docs/about-claude/models/all-models).
+
+The API documentation for the Llama models can be found [here](https://www.llama.com/docs/overview/). The Llama models can be downloaded [here](https://www.llama.com/llama-downloads/). You can also refer to information on the model variants [here](https://www.llama.com/docs/model-cards-and-prompt-formats/).
+
 ## 🖥 Code Structure
 
 The full system will run in two processes, so that both planning and execution can be performed simultaneously for faster task completion, and so that it is possible to interact with the simulation environment during LLM inference.
@@ -181,12 +192,16 @@ Further, it should facilitate adapting this codebase to allow the system to run 
 
 Please consider citing our work if you found it useful!
 ```bibtex
-@misc{kwon2023language,
-      title={Language Models as Zero-Shot Trajectory Generators}, 
-      author={Teyun Kwon and Norman Di Palo and Edward Johns},
-      year={2023},
-      eprint={2310.11604},
-      archivePrefix={arXiv},
-      primaryClass={cs.RO}
+@ARTICLE{Kwon2024Language,
+  author={Kwon, Teyun and Di Palo, Norman and Johns, Edward},
+  journal={IEEE Robotics and Automation Letters},
+  title={Language Models as Zero-Shot Trajectory Generators},
+  year={2024},
+  volume={9},
+  number={7},
+  pages={6728-6735},
+  doi={10.1109/LRA.2024.3410155},
+  ISSN={2377-3766},
+  month={July}
 }
 ```
